@@ -29,23 +29,31 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
   @Override
   public List<CategoryEntity> listWithTree() {
     List<CategoryEntity> categoryEntities = baseMapper.selectList(null);
-    categoryEntities.forEach(
-        categoryEntity ->
-            categoryEntity.setChildrenCategory(
-                getChildrenCategoriesById(categoryEntity.getCatId())));
     return categoryEntities.stream()
-        .filter(categoryEntity -> categoryEntity.getCatLevel() == 1)
+        .filter(categoryEntity -> categoryEntity.getParentCid() == 0)
+        .map(
+            categoryEntity -> {
+              categoryEntity.setChildrenCategory(
+                  getChildrenCategoriesById(categoryEntity.getCatId(), categoryEntities));
+              return categoryEntity;
+            })
         .collect(Collectors.toList());
   }
 
-  private List<CategoryEntity> getChildrenCategoriesById(Long id) {
-    List<CategoryEntity> categoryEntities = baseMapper.selectList(null);
+  @Override
+  public void removeCategoriesByIds(List<Long> ids) {
+    // TODO 检查当前删除菜单是否被别的地方引用
+    baseMapper.deleteBatchIds(ids);
+  }
+
+  private List<CategoryEntity> getChildrenCategoriesById(
+      Long id, List<CategoryEntity> categoryEntities) {
     return categoryEntities.stream()
         .filter(categoryEntity -> Objects.equals(categoryEntity.getParentCid(), id))
         .map(
             categoryEntity -> {
               categoryEntity.setChildrenCategory(
-                  getChildrenCategoriesById(categoryEntity.getCatId()));
+                  getChildrenCategoriesById(categoryEntity.getCatId(), categoryEntities));
               return categoryEntity;
             })
         .collect(Collectors.toList());

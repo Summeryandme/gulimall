@@ -6,7 +6,9 @@ import com.smw.gulimall.product.service.CategoryService;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,14 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("product/category")
 public class CategoryController {
-  @Autowired private CategoryService categoryService;
+  @Autowired
+  private CategoryService categoryService;
 
-  @RequestMapping("/list/tree")
+  @GetMapping("/list/tree")
   public R list() {
     List<CategoryEntity> entities = categoryService.listWithTree();
 
     return R.ok().put("data", entities);
   }
+
+  @PostMapping("/delete")
+  public R delete(@RequestBody Long[] catIds) {
+    categoryService.removeCategoriesByIds(Arrays.asList(catIds));
+
+    return R.ok();
+  }
+
+
 
   /** 信息 */
   @RequestMapping("/info/{catId}")
@@ -43,14 +55,6 @@ public class CategoryController {
   @RequestMapping("/update")
   public R update(@RequestBody CategoryEntity category) {
     categoryService.updateById(category);
-
-    return R.ok();
-  }
-
-  /** 删除 */
-  @RequestMapping("/delete")
-  public R delete(@RequestBody Long[] catIds) {
-    categoryService.removeByIds(Arrays.asList(catIds));
 
     return R.ok();
   }

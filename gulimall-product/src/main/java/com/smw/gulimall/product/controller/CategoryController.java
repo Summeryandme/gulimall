@@ -33,22 +33,17 @@ public class CategoryController {
     return R.ok();
   }
 
+  @RequestMapping("/save")
+  public R save(@RequestBody CategoryEntity category) {
+    categoryService.save(category);
+    return R.ok();
+  }
 
-
-  /** 信息 */
   @RequestMapping("/info/{catId}")
   public R info(@PathVariable("catId") Long catId) {
     CategoryEntity category = categoryService.getById(catId);
 
-    return R.ok().put("category", category);
-  }
-
-  /** 保存 */
-  @RequestMapping("/save")
-  public R save(@RequestBody CategoryEntity category) {
-    categoryService.save(category);
-
-    return R.ok();
+    return R.ok().put("data", category);
   }
 
   /** 修改 */

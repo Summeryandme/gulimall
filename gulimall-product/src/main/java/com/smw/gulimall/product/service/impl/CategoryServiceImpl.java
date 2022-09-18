@@ -33,7 +33,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         .filter(categoryEntity -> categoryEntity.getParentCid() == 0)
         .map(
             categoryEntity -> {
-              categoryEntity.setChildrenCategory(
+              categoryEntity.setChildren(
                   getChildrenCategoriesById(categoryEntity.getCatId(), categoryEntities));
               return categoryEntity;
             })
@@ -52,7 +52,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         .filter(categoryEntity -> Objects.equals(categoryEntity.getParentCid(), id))
         .map(
             categoryEntity -> {
-              categoryEntity.setChildrenCategory(
+              categoryEntity.setChildren(
                   getChildrenCategoriesById(categoryEntity.getCatId(), categoryEntities));
               return categoryEntity;
             })

@@ -3,6 +3,7 @@ package com.smw.gulimall.product.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.smw.common.valid.AddGroup;
+import com.smw.common.valid.ListValue;
 import com.smw.common.valid.UpdateGroup;
 import java.io.Serializable;
 import javax.validation.constraints.Min;
@@ -26,7 +27,7 @@ public class BrandEntity implements Serializable {
 
   @NotBlank(
       message = "品牌名必须提交",
-      groups = {UpdateGroup.class, AddGroup.class})
+      groups = {AddGroup.class})
   private String name;
 
   @NotEmpty(groups = {AddGroup.class})
@@ -37,11 +38,14 @@ public class BrandEntity implements Serializable {
 
   private String descript;
 
+  @ListValue(
+      values = {0, 1},
+      groups = {AddGroup.class})
   private Integer showStatus;
 
   @NotEmpty(groups = {AddGroup.class})
   @Pattern(
-      regexp = "/^[a-zA-Z]$",
+      regexp = "^[a-zA-Z]$",
       message = "首字母必须是一个字母",
       groups = {UpdateGroup.class, AddGroup.class})
   private String firstLetter;

@@ -2,51 +2,54 @@ package com.smw.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
+import com.smw.common.valid.AddGroup;
+import com.smw.common.valid.UpdateGroup;
 import java.io.Serializable;
-import java.util.Date;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
-/**
- * 品牌
- * 
- * @author smw
- * @email smwwhu@163.com
- * @date 2022-08-25 20:25:54
- */
 @Data
 @TableName("pms_brand")
 public class BrandEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * 品牌id
-	 */
-	@TableId
-	private Long brandId;
-	/**
-	 * 品牌名
-	 */
-	private String name;
-	/**
-	 * 品牌logo地址
-	 */
-	private String logo;
-	/**
-	 * 介绍
-	 */
-	private String descript;
-	/**
-	 * 显示状态[0-不显示；1-显示]
-	 */
-	private Integer showStatus;
-	/**
-	 * 检索首字母
-	 */
-	private String firstLetter;
-	/**
-	 * 排序
-	 */
-	private Integer sort;
+  @NotNull(message = "修改必须指定品牌id", groups = UpdateGroup.class)
+  @Null(message = "新增不能指定id", groups = AddGroup.class)
+  @TableId
+  private Long brandId;
 
+  @NotBlank(
+      message = "品牌名必须提交",
+      groups = {UpdateGroup.class, AddGroup.class})
+  private String name;
+
+  @NotEmpty(groups = {AddGroup.class})
+  @URL(
+      message = "logo必须是一个合法的url地址",
+      groups = {UpdateGroup.class, AddGroup.class})
+  private String logo;
+
+  private String descript;
+
+  private Integer showStatus;
+
+  @NotEmpty(groups = {AddGroup.class})
+  @Pattern(
+      regexp = "/^[a-zA-Z]$",
+      message = "首字母必须是一个字母",
+      groups = {UpdateGroup.class, AddGroup.class})
+  private String firstLetter;
+
+  @NotNull(groups = {AddGroup.class})
+  @Min(
+      value = 0,
+      message = "排序必须大于零",
+      groups = {UpdateGroup.class, AddGroup.class})
+  private Integer sort;
 }
